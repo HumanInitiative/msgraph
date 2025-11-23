@@ -1,6 +1,6 @@
 <?php
 
-namespace pkpudev\graph;
+namespace humaninitiative\graph;
 
 /**
  * Get byte range for Resumable File Upload

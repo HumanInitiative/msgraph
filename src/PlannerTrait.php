@@ -1,7 +1,8 @@
 <?php
 
-namespace pkpudev\graph;
+namespace humaninitiative\graph;
 
+use GuzzleHttp\Exception\ClientException;
 use Microsoft\Graph\Model\PlannerPlan;
 use Microsoft\Graph\Model\PlannerTask;
 
@@ -16,11 +17,16 @@ trait PlannerTrait
      */
     public function getPlans($groupId, $limit = 10)
     {
-        $plans = $this->graph
-            ->createRequest("GET", sprintf('/groups/%s/planner/plans?$top=%s', $groupId, $limit))
-            ->setReturnType(PlannerPlan::class)
-            ->execute();
-        return $plans;
+        try {
+            $plans = $this->graph
+                ->createRequest("GET", sprintf('/groups/%s/planner/plans?$top=%s', $groupId, $limit))
+                ->setReturnType(PlannerPlan::class)
+                ->execute();
+            
+            return $plans;
+        } catch (ClientException $exception) {
+            throw $exception;
+        }
     }
 
     /**
@@ -32,10 +38,15 @@ trait PlannerTrait
      */
     public function getTasks($planId, $limit = 10)
     {
-        $plans = $this->graph
-            ->createRequest("GET", sprintf('/planner/plans/%s/tasks?$top=%s', $planId, $limit))
-            ->setReturnType(PlannerTask::class)
-            ->execute();
-        return $plans;
+        try {
+            $plans = $this->graph
+                ->createRequest("GET", sprintf('/planner/plans/%s/tasks?$top=%s', $planId, $limit))
+                ->setReturnType(PlannerTask::class)
+                ->execute();
+            
+            return $plans;
+        } catch (ClientException $exception) {
+            throw $exception;
+        }
     }
 }

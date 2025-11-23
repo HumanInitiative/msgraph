@@ -1,7 +1,8 @@
 <?php
 
-namespace pkpudev\graph;
+namespace humaninitiative\graph;
 
+use GuzzleHttp\Exception\ClientException;
 use Microsoft\Graph\Graph;
 use Microsoft\Graph\Model\User;
 
@@ -39,11 +40,31 @@ class Connection
      */
     public function getUsers($search, $limit = 10)
     {
-        $url = "/users?\$top=%s&\$filter=startswith(displayName,'%s')";
-        $users = $this->graph
-            ->createRequest("GET", sprintf($url, $limit, $search))
-            ->setReturnType(User::class)
-            ->execute();
-        return $users;
+        try {
+            $url = "/users?\$top=%s&\$filter=startswith(mail,'%s')";
+            $users = $this->graph
+                ->createRequest("GET", sprintf($url, $limit, $search))
+                ->setReturnType(User::class)
+                ->execute();
+
+            return $users;
+        } catch (ClientException $exception) {
+            throw $exception;
+        }
+    }
+
+    public function getUserById($search)
+    {
+        try {
+            $url = "/users/%s";
+            $user = $this->graph
+                ->createRequest("GET", sprintf($url, $search))
+                ->setReturnType(User::class)
+                ->execute();
+    
+            return $user;
+        } catch (ClientException $exception) {
+            throw $exception;
+        }
     }
 }

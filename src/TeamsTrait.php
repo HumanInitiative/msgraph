@@ -1,7 +1,8 @@
 <?php
 
-namespace pkpudev\graph;
+namespace humaninitiative\graph;
 
+use GuzzleHttp\Exception\ClientException;
 use Microsoft\Graph\Model\Team;
 
 trait TeamsTrait
@@ -16,16 +17,21 @@ trait TeamsTrait
      */
     public function getTeams($userId, $search = null, $limit = 10)
     {
-        $url = sprintf('/users/%s/joinedTeams?$top=%s', $userId, $limit);
-        if ($search) {
-            $url = sprintf('/users/%s/joinedTeams?$top=%s&$search=\"displayName:%s\"', $userId, $limit, $search);
+        try {
+            $url = sprintf('/users/%s/joinedTeams?$top=%s', $userId, $limit);
+            if ($search) {
+                $url = sprintf('/users/%s/joinedTeams?$top=%s&$search=\"displayName:%s\"', $userId, $limit, $search);
+            }
+    
+            $teams = $this->graph
+                ->createRequest("GET", $url)
+                ->addHeaders(['ConsistencyLevel' => 'eventual'])
+                ->setReturnType(Team::class)
+                ->execute();
+            
+            return $teams;
+        } catch (ClientException $exception) {
+            throw $exception;
         }
-
-        $teams = $this->graph
-            ->createRequest("GET", $url)
-            ->addHeaders(['ConsistencyLevel' => 'eventual'])
-            ->setReturnType(Team::class)
-            ->execute();
-        return $teams;
     }
 }

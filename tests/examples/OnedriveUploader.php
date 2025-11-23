@@ -2,7 +2,7 @@
 
 namespace tests\examples;
 
-use pkpudev\graph\Uploader;
+use humaninitiative\graph\Uploader;
 
 class OnedriveUploader
 {

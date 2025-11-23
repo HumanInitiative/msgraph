@@ -1,6 +1,6 @@
 <?php
 
-namespace pkpudev\graph;
+namespace humaninitiative\graph;
 
 use Microsoft\Graph\Model\FileAttachment;
 

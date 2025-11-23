@@ -1,7 +1,8 @@
 <?php
 
-namespace pkpudev\graph;
+namespace humaninitiative\graph;
 
+use GuzzleHttp\Exception\ClientException;
 use Microsoft\Graph\Model\Attachment;
 use Microsoft\Graph\Model\FileAttachment;
 use Microsoft\Graph\Model\Message;
@@ -17,11 +18,16 @@ trait MessagesTrait
      */
     public function getMessages($userId, $limit = 10)
     {
-        $messages = $this->graph
-            ->createRequest("GET", sprintf('/users/%s/mailFolders/inbox/messages?$top=%s', $userId, $limit))
-            ->setReturnType(Message::class)
-            ->execute();
-        return $messages;
+        try {
+            $messages = $this->graph
+                ->createRequest("GET", sprintf('/users/%s/mailFolders/inbox/messages?$top=%s', $userId, $limit))
+                ->setReturnType(Message::class)
+                ->execute();
+
+            return $messages;
+        } catch (ClientException $exception) {
+            throw $exception;
+        }
     }
 
     /**
@@ -33,11 +39,16 @@ trait MessagesTrait
      */
     public function getAttachments($userId, $msgId)
     {
-        $attachments = $this->graph
-            ->createRequest("GET", sprintf('/users/%s/messages/%s/attachments', $userId, $msgId))
-            ->setReturnType(Attachment::class)
-            ->execute();
-        return $attachments;
+        try {
+            $attachments = $this->graph
+                ->createRequest("GET", sprintf('/users/%s/messages/%s/attachments', $userId, $msgId))
+                ->setReturnType(Attachment::class)
+                ->execute();
+            
+            return $attachments;
+        } catch (ClientException $exception) {
+            throw $exception;
+        }
     }
 
     /**
@@ -50,11 +61,16 @@ trait MessagesTrait
      */
     public function getFileAttachment($userId, $msgId, $attachmentId)
     {
-        $fileAttachment = $this->graph
-            ->createRequest("GET", sprintf('/users/%s/messages/%s/attachments/%s', $userId, $msgId, $attachmentId))
-            ->setReturnType(FileAttachment::class)
-            ->execute();
-        return $fileAttachment;
+        try {
+            $fileAttachment = $this->graph
+                ->createRequest("GET", sprintf('/users/%s/messages/%s/attachments/%s', $userId, $msgId, $attachmentId))
+                ->setReturnType(FileAttachment::class)
+                ->execute();
+            
+                return $fileAttachment;
+        } catch (ClientException $exception) {
+            throw $exception;
+        }
     }
 
     /**
@@ -66,11 +82,16 @@ trait MessagesTrait
      */
     public function deleteMessage($userId, $msgId)
     {
-        $message = $this->graph
-            ->createRequest("POST", sprintf('/users/%s/messages/%s/move', $userId, $msgId))
-            ->attachBody(['destinationId' => 'deletedItems'])
-            ->setReturnType(Message::class)
-            ->execute();
-        return $message;
+        try {
+            $message = $this->graph
+                ->createRequest("POST", sprintf('/users/%s/messages/%s/move', $userId, $msgId))
+                ->attachBody(['destinationId' => 'deletedItems'])
+                ->setReturnType(Message::class)
+                ->execute();
+            
+            return $message;
+        } catch (ClientException $exception) {
+            throw $exception;
+        }
     }
 }

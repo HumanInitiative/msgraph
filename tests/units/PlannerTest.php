@@ -1,9 +1,9 @@
 <?php
 
+use humaninitiative\graph\Connection;
 use Microsoft\Graph\Model\Group;
 use Microsoft\Graph\Model\Team;
 use PHPUnit\Framework\TestCase;
-use pkpudev\graph\Connection;
 
 final class PlannerTest extends TestCase
 {

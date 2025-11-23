@@ -2,7 +2,7 @@
 
 namespace tests\examples;
 
-use pkpudev\graph\AccessToken;
+use humaninitiative\graph\AccessToken;
 
 trait TokenTrait
 {

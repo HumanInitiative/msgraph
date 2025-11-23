@@ -1,7 +1,8 @@
 <?php
 
-namespace pkpudev\graph;
+namespace humaninitiative\graph;
 
+use GuzzleHttp\Exception\ClientException;
 use Microsoft\Graph\Model\Group;
 
 trait GroupTrait
@@ -15,12 +16,17 @@ trait GroupTrait
      */
     public function getGroups($name, $limit = 10)
     {
-        $url = "/groups?\$top=%s&\$search=\"displayName:%s\"";
-        $groups = $this->graph
-            ->createRequest("GET", sprintf($url, $limit, $name))
-            ->addHeaders(['ConsistencyLevel' => 'eventual'])
-            ->setReturnType(Group::class)
-            ->execute();
-        return $groups;
+        try {
+            $url = "/groups?\$top=%s&\$search=\"displayName:%s\"";
+            $groups = $this->graph
+                ->createRequest("GET", sprintf($url, $limit, $name))
+                ->addHeaders(['ConsistencyLevel' => 'eventual'])
+                ->setReturnType(Group::class)
+                ->execute();
+                
+            return $groups;
+        } catch (ClientException $exception) {
+            throw $exception;
+        }
     }
 }
